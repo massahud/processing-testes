@@ -1,23 +1,33 @@
 import processing.webgl.*;
 PImage imgFill;
 PShape bolaSvg;
-
-
+PImage splash;
+boolean showSplash = true;
+int margin;
+long startTime;
 void setup() {  
   
     size(CANVAS_WIDTH, CANVAS_HEIGHT);
     background(100);
     stroke(255);
     frameRate(30);    
-    bolaSvg = loadShape("bola.svg");    
+    bolaSvg = loadShape("bola.svg");
+    splash = loadShape("bola.svg");
+    margin = CANVAS_WIDTH/20;
+    smooth();
+    shapeMode(CENTER);
+    shape(splash, CANVAS_WIDTH/2, CANVAS_HEIGHT/2, CANVAS_WIDTH/2-2*margin,CANVAS_HEIGHT/2-2*margin);
+    startTime =  millis();
     init(this);
+    
 }
 
 PShape getBolaSvg() {
     return bolaSvg;
 }
 
-void draw() {    
+void draw() {
+    
     update();
     //background(#000000)
     
@@ -33,6 +43,13 @@ void draw() {
     }
     if (mousePressed == true) {
         line(bola.GetPosition().x*CANVAS_WIDTH_SCALE, bola.GetPosition().y*CANVAS_HEIGHT_SCALE, mouseX, mouseY);
+    }
+    if (showSplash) {
+        shapeMode(CENTER);
+        shape(splash, CANVAS_WIDTH/2, CANVAS_HEIGHT/2, CANVAS_WIDTH-2*margin,CANVAS_HEIGHT-2*margin);
+        if (millis()-startTime > 1000) {
+            showSplash = false;
+        }
     }
 }
 

@@ -11,8 +11,8 @@ var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 var world;
 var WORLD_WIDTH = 10;
 var WORLD_HEIGHT = 10;
-var CANVAS_WIDTH = 500;
-var CANVAS_HEIGHT = 500;
+var CANVAS_WIDTH = document.width ? Math.min(Math.min(document.width-5, document.height-5),768) : 768;
+var CANVAS_HEIGHT = CANVAS_WIDTH;
 var CANVAS_WIDTH_SCALE = CANVAS_WIDTH/WORLD_WIDTH;
 var CANVAS_HEIGHT_SCALE = CANVAS_HEIGHT/WORLD_HEIGHT;
 var bola;
@@ -20,19 +20,29 @@ var boxDef;
 var boxFixDef;
 var pjs;
 boxDef = new b2BodyDef();
+//boxDef.linearDamping = 0;
+//boxDef.angularDamping = 0.01;
+
 boxFixDef = new b2FixtureDef();
-boxFixDef.friction = 0.3;
+
+boxFixDef.friction = 0.2;
 boxFixDef.density = 0;
+
 boxDef.type = b2Body.m_staticBody;
 var caixa;
-function createBox(centerX, centerY, halfWidth, halfHeight, type, density, stroke, fill) {
+function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, density, stroke, fill) {
     boxDef.position.Set(centerX, centerY);
-    boxDef.restitution = 0.1;
+    
     if (type) {
         boxDef.type = type;
     } else {
         boxDef.type = b2Body.m_staticBody;
     }
+    if (restitution) {
+        boxFixDef.restitution = restitution;
+    } else {
+        boxFixDef.restitution = 0.2;
+    }    
     var box = new b2PolygonShape();
     box.SetAsBox(halfWidth, halfHeight);
     var body = world.CreateBody(boxDef);    
@@ -81,17 +91,17 @@ function init(asd) {
     */
     
     // chao
-    createBox(WORLD_WIDTH/2, WORLD_HEIGHT-0.1, WORLD_WIDTH/2, 0.1);
+    createBox(WORLD_WIDTH/2, WORLD_HEIGHT-0.1, WORLD_WIDTH/2, 0.1, 0);
     // teto
-    createBox(WORLD_WIDTH/2, 0.1, WORLD_WIDTH/2, 0.1);
+    createBox(WORLD_WIDTH/2, 0.1, WORLD_WIDTH/2, 0.1, 0);
     // esquerda
-    createBox(0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2);
+    createBox(0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2,0);
     // direita
-    createBox(WORLD_WIDTH-0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2);
+    createBox(WORLD_WIDTH-0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2,0);
     
     for (var i = 0; i < 10; i++) {
-        var altura = Math.random()*1;
-        var largura = Math.random()*3;
+        var altura = 0.25+Math.random()*1;
+        var largura = 0.25+Math.random()*2.5;
         var a = 255<<24;
         var r = parseInt(Math.random()*256)<<16;
         var g = parseInt(Math.random()*256)<<8;
@@ -99,20 +109,20 @@ function init(asd) {
         var rf = parseInt(Math.random()*256)<<16;
         var gf = parseInt(Math.random()*256)<<8;
         var bf = parseInt(Math.random()*256);
-        createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2,b2Body.b2_dynamicBody, altura*largura*5, pjs.hex(a|r|g|b), pjs.hex(a|rf|gf|bf));
+        createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, pjs.hex(a|r|g|b), pjs.hex(a|rf|gf|bf));
     }
        
     var bolaDef = new b2BodyDef();
     bolaDef.type=b2Body.b2_dynamicBody;
     bolaDef.position.Set(WORLD_WIDTH/2, WORLD_HEIGHT/1.5);
-    bolaDef.linearDamping=0.00000001;
-    bolaDef.angularDamping=0.0001;
+    //bolaDef.linearDamping=0;
+    //bolaDef.angularDamping=0.01;
     
     var bolaFixDef = new b2FixtureDef();
-    bolaFixDef.restitution = 0.95;
+    bolaFixDef.restitution = 0.9;
     bolaFixDef.shape = new b2CircleShape(0.5); 
-    bolaFixDef.friction = 0.3;
-    bolaFixDef.density=10;
+    bolaFixDef.friction = 0.1;
+    bolaFixDef.density=0.5*0.5*Math.PI*10;
     //create some objects
          
     
@@ -141,15 +151,15 @@ function update(pjs) {
     /*if (!bola.IsAwake()) {
         bola.ApplyImpulse(new b2Vec2(Math.random()*100,Math.random()*100), new b2Vec2(0,0));
     }*/
-    world.DrawDebugData();
+    //world.DrawDebugData();
     world.ClearForces();
 }
 
 function aplicaImpulso(x, y) {
     var impulso = new b2Vec2(x, y);
     impulso.Subtract(bola.GetWorldCenter());
-    impulso.Multiply(bola.GetFixtureList().GetDensity()*2);
-    bola.ApplyImpulse(impulso, new b2Vec2(0,0));
+    impulso.Multiply(bola.GetFixtureList().GetDensity()*3);    
+    bola.ApplyImpulse(impulso, bola.GetWorldCenter());
     console.log("impulso: " + impulso.x + "," + impulso.y);
 }
 
