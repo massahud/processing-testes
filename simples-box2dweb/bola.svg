@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <g>
+  <title>Layer 1</title>
+  <circle fill="#FF0000" stroke="#000000" stroke-width="3" cx="50" cy="50" r="48" id="svg_2"/>
+  <path stroke="#000000" id="svg_1" d="m20.809999,42.589073l22.536173,0l6.963829,-21.409416l6.963825,21.409416l22.536171,0l-18.231979,13.231453l6.964256,21.409271l-18.232273,-13.231735l-18.231987,13.231735l6.964249,-21.409271l-18.232264,-13.231453l0,0z" fill="#003f7f"/>
+ </g>
+</svg>
