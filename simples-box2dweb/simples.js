@@ -30,7 +30,7 @@ boxFixDef.density = 0;
 
 boxDef.type = b2Body.m_staticBody;
 var caixa;
-function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, density, stroke, fill) {
+function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, density, stroke, fill, pjsShape) {
     boxDef.position.Set(centerX, centerY);
     
     if (type) {
@@ -52,26 +52,38 @@ function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, d
     } else {
         boxFixDef.density = 0;
     }
+    
     body.CreateFixture(boxFixDef);
     body.pjsDraw = function(pjs) {
-        
-        var p0= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[0]);
-        p0.Multiply(CANVAS_WIDTH_SCALE);
-        var p1= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[1]);
-        p1.Multiply(CANVAS_WIDTH_SCALE);
-        var p2= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[2]);
-        p2.Multiply(CANVAS_HEIGHT_SCALE);
-        var p3= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[3]);
-        p3.Multiply(CANVAS_WIDTH_SCALE);
-        pjs.pushStyle();            
-            if (stroke) {
-                pjs.stroke(pjs.unhex(stroke));
-            }
-            if (fill) {                
-                pjs.fill(pjs.unhex(fill));
-            }
-            pjs.quad(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
-        pjs.popStyle();
+        if (pjsShape) {
+            pjs.pushMatrix();
+            pjs.shapeMode(pjs.CENTER);
+                var c = this.GetWorldCenter()
+                pjs.translate(c.x*CANVAS_WIDTH_SCALE, c.y*CANVAS_HEIGHT_SCALE);
+                pjs.rotate(this.GetAngle());
+                var w = 2*halfWidth*CANVAS_WIDTH_SCALE;
+                var h = 2*halfHeight*CANVAS_HEIGHT_SCALE;
+                pjs.shape(pjsShape, 0, 0, w, h);
+            pjs.popMatrix();
+        } else {
+            var p0= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[0]);
+            p0.Multiply(CANVAS_WIDTH_SCALE);
+            var p1= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[1]);
+            p1.Multiply(CANVAS_WIDTH_SCALE);
+            var p2= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[2]);
+            p2.Multiply(CANVAS_HEIGHT_SCALE);
+            var p3= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[3]);
+            p3.Multiply(CANVAS_WIDTH_SCALE);
+            pjs.pushStyle();
+                if (stroke) {
+                    pjs.stroke(pjs.unhex(stroke));
+                }
+                if (fill) {                
+                    pjs.fill(pjs.unhex(fill));
+                }
+                pjs.quad(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+            pjs.popStyle();
+        }
     }
     return body;
 }
@@ -91,13 +103,13 @@ function init(asd) {
     */
     
     // chao
-    createBox(WORLD_WIDTH/2, WORLD_HEIGHT-0.1, WORLD_WIDTH/2, 0.1, 0);
+    createBox(WORLD_WIDTH/2, WORLD_HEIGHT-0.1, WORLD_WIDTH/2, 0.1, 0, b2Body.m_staticBody, 0, 'FF000000', 'FF000000');
     // teto
-    createBox(WORLD_WIDTH/2, 0.1, WORLD_WIDTH/2, 0.1, 0);
+    createBox(WORLD_WIDTH/2, 0.1, WORLD_WIDTH/2, 0.1, 0, b2Body.m_staticBody, 0, 'FF000000', 'FF000000');
     // esquerda
-    createBox(0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2,0);
+    createBox(0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2,0, b2Body.m_staticBody, 0, 'FF000000', 'FF000000');
     // direita
-    createBox(WORLD_WIDTH-0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2,0);
+    createBox(WORLD_WIDTH-0.1, WORLD_HEIGHT/2, 0.1, WORLD_HEIGHT/2-0.2,0, b2Body.m_staticBody, 0, 'FF000000', 'FF000000');
     
     for (var i = 0; i < 10; i++) {
         var altura = 0.25+Math.random()*1;
@@ -109,7 +121,9 @@ function init(asd) {
         var rf = parseInt(Math.random()*256)<<16;
         var gf = parseInt(Math.random()*256)<<8;
         var bf = parseInt(Math.random()*256);
-        createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, pjs.hex(a|r|g|b), pjs.hex(a|rf|gf|bf));
+        var blocos = pjs.getBlocos();
+        //createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, pjs.hex(a|r|g|b), pjs.hex(a|rf|gf|bf));
+        createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, 1, 1, blocos[i%blocos.length]);
     }
        
     var bolaDef = new b2BodyDef();
