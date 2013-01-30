@@ -42,8 +42,8 @@ void draw() {
     
     background(#cccccc);
     
-    stroke(#ff0000);
-    fill(#00ff00);
+    stroke(#000000);
+    fill(#000000);
     //image(imgFill, 0, 0);
     for (var body = world.GetBodyList(); body; body = body.GetNext()) {
         if (body.pjsDraw) {
