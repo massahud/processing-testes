@@ -8,7 +8,7 @@ void setup() {
 
 void draw() {
     update();
-    //background(#000000)
+    background(#000000)
     
     background(255, 204, 0);
     ellipse(x, y, 25, 25);

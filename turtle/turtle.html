@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=320"/> 
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.1/processing.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+        <script type="text/javascript">
+            var pjs;
+            function init(pjsScript) {
+                pjs = pjsScript;
+                document.getElementById("inc").value=pjs.getInc();
+                //document.getElementById("incA").value=pjs.getIncA();
+                document.getElementById("ang").value=pjs.getAng();
+                document.getElementById("animar").checked = pjs.isAnimar();
+            }
+        </script>            
+        
+        <title> </title>
+    </head>
+    <body>       
+        <canvas data-processing-sources="turtle.pde.js"></canvas>        
+        <p>
+            <label for="inc">Incremento reta:</label>
+            <input type="text" value="" id="inc" style="border: 0; color: #f6931f; font-weight: bold;" onblur="pjs.setInc(parseFloat(this.value))" />
+            <label for="ang">Angulo rotação:</label>
+            <input type="text" value="" id="ang" style="border: 0; color: #f6931f; font-weight: bold;" onblur="pjs.setAng(parseFloat(this.value))"/>                    
+            <br/>
+            <label for="animar">Animar:</label>
+            <input type="checkbox" id="animar" onchange="console.log(this.checked);pjs.setAnimar(this.checked)"/>
+            <!--<label for="incA">Incremento angulo:</label>
+            <input type="text" value="" id="incA" style="border: 0; color: #f6931f; font-weight: bold;" onblur="pjs.setIncA(parseFloat(this.value))"/>                    -->
+        </p>
+        <div id="angulo-increment" style="width: 200px"></div>
+    </body>
+</html>
