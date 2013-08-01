@@ -55,7 +55,8 @@ function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, d
     
     body.CreateFixture(boxFixDef);
     body.pjsDraw = function(pjs) {
-        if (pjsShape) {
+        if (pjsShape) {            
+            
             pjs.pushMatrix();
             pjs.shapeMode(pjs.CENTER);
                 var c = this.GetWorldCenter()
@@ -65,6 +66,7 @@ function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, d
                 var h = 2*halfHeight*CANVAS_HEIGHT_SCALE;
                 pjs.shape(pjsShape, 0, 0, w, h);
             pjs.popMatrix();
+            
         } else {
             var p0= this.GetWorldPoint(this.GetFixtureList().GetShape().GetVertices()[0]);
             p0.Multiply(CANVAS_WIDTH_SCALE);
@@ -87,6 +89,9 @@ function createBox(centerX, centerY, halfWidth, halfHeight, restitution, type, d
     }
     return body;
 }
+
+ var img = new Image();
+            var img2 = new Image();
 function init(asd) {
     pjs = asd;
     
@@ -145,7 +150,7 @@ function init(asd) {
     
     bola.pjsDraw = function(pjs) {
         pjs.pushStyle();        
-            pjs.smooth();
+            //pjs.smooth();
             pjs.shapeMode(pjs.CENTER);
             pjs.pushMatrix();
                 var c = this.GetWorldCenter()
@@ -159,9 +164,33 @@ function init(asd) {
     //bola.ApplyImpulse(new b2Vec2(Math.random()*100,Math.random()*100), new b2Vec2(0,0));
 }
 
-function update(pjs) {
-    //pjs.shape(pjs.bolaSvg,0,0,50,50);
-    world.Step(1/30, 10, 10);
+var accum = 0;
+var maxFrameTime = 1/30;
+var maxStep = 1/240;
+//console.log(maxStep);
+function update(pjs, dt) {
+    dt /= 1000;
+    if ( dt > maxFrameTime )
+              dt = maxFrameTime;      // avoid being stuck on acumm loop    
+    accum += dt;
+    
+    while (accum > maxStep) {
+        var t0 = new Date().getTime();
+        world.Step(maxStep, 10, 4);
+        t0 = (new Date().getTime() - t0)/1000;
+        if (t0 > maxStep) {
+            maxStep = t0;
+            //console.log(t0);
+        }
+        accum -= maxStep;
+    }
+    
+   /* if (accum > 0) {
+        var alpha = accum/maxStep;
+        world.Step(accum, 1, 1);
+        accum = 0;
+    }
+    */
     /*if (!bola.IsAwake()) {
         bola.ApplyImpulse(new b2Vec2(Math.random()*100,Math.random()*100), new b2Vec2(0,0));
     }*/
@@ -172,8 +201,8 @@ function update(pjs) {
 function aplicaImpulso(x, y) {
     var impulso = new b2Vec2(x, y);
     impulso.Subtract(bola.GetWorldCenter());
-    impulso.Multiply(bola.GetFixtureList().GetDensity()*3);    
+    impulso.Multiply(bola.GetFixtureList().GetDensity()*2);    
     bola.ApplyImpulse(impulso, bola.GetWorldCenter());
-    console.log("impulso: " + impulso.x + "," + impulso.y);
+    //console.log("impulso: " + impulso.x + "," + impulso.y);
 }
 
