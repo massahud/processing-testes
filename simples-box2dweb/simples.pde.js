@@ -6,7 +6,7 @@ boolean showSplash = true;
 int margin;
 long startTime;
 long t;
-PShape blocos[] = new PShape[3];
+PShape blocos[] = new PShape[4];
 void setup() {  
   
     size(CANVAS_WIDTH, CANVAS_HEIGHT, P2D);
