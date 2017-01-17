@@ -128,7 +128,7 @@ function init(asd) {
         var bf = parseInt(Math.random()*256);
         var blocos = pjs.getBlocos();
         //createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, pjs.hex(a|r|g|b), pjs.hex(a|rf|gf|bf));
-        createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, 1, 1, blocos[parseInt(Math.random()*blocos.length)]);
+        createBox(largura/2+Math.random()*(WORLD_WIDTH-largura),altura/2+Math.random()*(WORLD_HEIGHT-altura),largura/2,altura/2, 0.3, b2Body.b2_dynamicBody, altura*largura*5, 1, 1, blocos[parseInt((Math.random()*blocos.length)-0.99)]);
     }
        
     var bolaDef = new b2BodyDef();
